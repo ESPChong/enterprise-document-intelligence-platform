@@ -1,6 +1,0 @@
-#!/Users/corrin/Coding_Projects/Projects/AI-Based-API/Enterprise-Document-Intelligence-Platform/venv/bin/python3
-import sys
-from httpx import main
-if __name__ == '__main__':
-    sys.argv[0] = sys.argv[0].removesuffix('.exe')
-    sys.exit(main())
