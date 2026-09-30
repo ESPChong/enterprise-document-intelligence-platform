@@ -6,6 +6,10 @@
 
 # build files
 /app/__pycache__
+.coverage
+
+# test
+.pytest_cache
 
 # logs
 logs/

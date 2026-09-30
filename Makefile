@@ -34,15 +34,14 @@ dev:
 test:
 	pytest tests/ -v --cov=app
 
-clean:
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-	find . -type d -name ".pytest_cache" -exec rm -rf {} +
-	rm -rf htmlcov/
-	rm -f .coverage
-	@echo "🧹 Cleaned!"
+test-services:
+	pytest tests/test_services.py -v
 
 ollama:
 	ollama serve
+
+check-ollama:
+	curl -f http://localhost:11434/api/tags || echo "❌ Ollama not running"
 
 models:
 	ollama pull llama3:8b-instruct-q4_0
@@ -51,3 +50,21 @@ models:
 
 setup: install models
 	@echo "🎉 Setup complete! Run 'make dev' to start."
+
+# Start all services for development
+dev-all:
+	@echo "Starting all services..."
+	@ollama serve &
+	@uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 &
+	@streamlit run frontend/app.py &
+	@wait
+
+clean:
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type d -name ".pytest_cache" -exec rm -rf {} +
+	rm -rf htmlcov/
+	rm -f .coverage
+	@echo "🧹 Cleaned!"
+
+
+

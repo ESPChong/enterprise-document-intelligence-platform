@@ -1,15 +1,20 @@
 """
 Application configuration using Pydantic Settings.
-Loads from environment variables and .env file.
 """
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
 from functools import lru_cache
 
 
 class Settings(BaseSettings):
     """Application settings with type validation."""
+    
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=True,
+        extra="ignore"
+    )
     
     # ---- Application Settings ----
     APP_NAME: str = "Enterprise Document Intelligence"
@@ -38,6 +43,12 @@ class Settings(BaseSettings):
     MAX_DOCUMENTS: int = 1000
     MAX_FILE_SIZE_MB: int = 50
     
+    # ---- Query Settings ----
+    RETRIEVER_K: int = 5
+    RETRIEVER_FETCH_K: int = 20
+    LLM_TEMPERATURE: float = 0.1
+    LLM_CONTEXT_WINDOW: int = 4096
+    
     # ---- Monitoring ----
     LANGFUSE_PUBLIC_KEY: Optional[str] = None
     LANGFUSE_SECRET_KEY: Optional[str] = None
@@ -57,11 +68,6 @@ class Settings(BaseSettings):
     MAX_WORKERS: int = 4
     REQUEST_TIMEOUT: int = 60
     RATE_LIMIT_PER_MINUTE: int = 60
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
-        extra = "ignore"
 
 
 @lru_cache()
